@@ -1,0 +1,17 @@
+$breakpoints: (
+	//'small': (max-width: 0px),
+	'medium': (min-width: 480px),
+	'large': (min-width: 768px),
+	'xlarge': (min-width: 992px)
+) !default;
+
+@mixin breakpoint($breakpoint) {
+	@if map-has-key($breakpoints, $breakpoint) {
+		@media #{inspect(map-get($breakpoints, $breakpoint))} {
+			@content;
+		}
+	}
+	@else {
+		@warn "Warning: Invalid SCSS breakpoint";
+	}
+}

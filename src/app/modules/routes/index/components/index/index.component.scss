@@ -1,0 +1,53 @@
+@import "../../../../../../styles.scss";
+/*
+h1 {
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+*/
+
+.card {
+	display: flex;
+	flex-direction: column;
+	background-color: white;
+	border-radius: 3px;
+	margin-bottom: 5px;
+	overflow: hidden;
+
+	&:hover {
+		.header .image {
+			transform: scale(1.1);
+		}
+	}
+
+	.header {
+		width: 100%;
+		height: 100px;
+		overflow: hidden;
+		border: 1px solid gray;
+
+		@include breakpoint('large') {
+			height: 200px;
+			background-color: yellow;
+		}
+
+		.image {
+			width: 100%;
+			height: 100%;
+			background-color: black;
+			//background-image: url('../../../../../../assets/images/card-header-04.jpg');
+			background-position: center center;
+			background-size: cover;
+			transition: all .5s;
+		}
+	}
+
+	.footer {
+		padding: 10px 20px;
+
+		h1 {
+			font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+			font-weight: bold;
+			font-size: 22px;
+		}
+	}
+}
