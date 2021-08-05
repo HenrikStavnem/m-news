@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { IStory } from '../interfaces/story';
+import { IStory, IUser } from '../interfaces/story';
 import { ApiService } from '../services/api.service';
 
 @Injectable({
@@ -44,15 +44,21 @@ export class StoryMapper {
 			.then(function handleData(data) {
 				console.log('response data', data)
 				
-				data.forEach(storyData => {
+				data.forEach(async storyData => {
+
+					let user: IUser = await me.fetchUser(storyData.by);
+					console.log('user', user);
+
 					let story: IStory = {
 						id: storyData.id,
 						by: storyData.by,
 						score: storyData.score,
 						time: storyData.time,
+						date: new Date(storyData.time * 1000), //convert from seconds (UNIX) to milliseconds (Date)
 						type: storyData.type,
 						url: storyData.url,
 						title: storyData.title,
+						user: user,
 						image: me.pickRandomHeaderImage()
 					};
 
@@ -61,15 +67,54 @@ export class StoryMapper {
 			})
 		
 			console.log('END');
+
+			stories.sort(this.sortStoriesByScore());
+
 			return stories;
 	}
 
-	pickRandomHeaderImage(): string {
+	private async fetchUser(id: string): Promise<IUser> {
+
+		let user: IUser = {name: '', karma: 0};
+
+		await fetch(`https://hacker-news.firebaseio.com/v0/user/${id}.json`)
+			.then(response => response.json())
+			.then(async data => {
+				user = {
+					name: data.id ? data.id : 'unknown',
+					karma: data.karma
+				};
+			}
+		);
+
+		console.log('fetchUser return');
+
+		return user;
+	}
+
+	private sortStoriesByScore() {
+		return function(a: any, b: any) {
+			if (a['score'] > b['score']) {
+				return 1;
+			}
+			else if (a['score'] < b['score']) {
+				return -1;
+			}
+			else {
+				return 0;
+			}
+		}
+	}
+
+	private pickRandomHeaderImage(): string {
 		const images = [
 			'card-header-01.jpg',
 			'card-header-02.jpg',
 			'card-header-03.jpg',
-			'card-header-04.jpg'
+			'card-header-04.jpg',
+			'card-header-05.jpg',
+			'card-header-06.jpg',
+			'card-header-07.jpg'
 		],
 		randomIndex = Math.floor(Math.random() * images.length);
 
@@ -89,9 +134,5 @@ export class StoryMapper {
 		}
 
 		return selectedIds;
-	}
-
-	private getUser() {
-
 	}
 }

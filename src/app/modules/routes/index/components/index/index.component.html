@@ -1,13 +1,21 @@
-<p>Number of stories: {{stories.length}}</p>
+<h1>Top Stories</h1>
 
 <ng-container *ngFor="let story of stories">
 	<a [href]="story.url">
 		<div class="card">
 			<div class="header">
-				<div class="image" [style.background-image]="'url(' + story.image + ')'"></div>
+				<div class="image" [style.background-image]="'url(assets/images/' + story.image + ')'"></div>
 			</div>
 			<div class="footer">
 				<h1>{{story.title}}</h1>
+				<div class="by-line">
+					Posted by <a href="google.com">{{story.user.name}}</a>
+					<span class="karma">
+						<div class="tooltip">TOOLTIP<br />Input karma stuff here</div>
+						♥ {{story.user.karma}}
+					</span>
+					 • {{story.date | date:'medium'}} • Score: {{story.score}}
+				</div>
 			</div>
 		</div>
 	</a>

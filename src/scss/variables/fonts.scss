@@ -1,0 +1,17 @@
+@font-face {
+	font-family: 'font1';
+	font-display: swap;
+	src: url('../../assets/fonts/1.woff2');
+}
+
+@font-face {
+	font-family: 'font2';
+	font-display: swap;
+	src: url('../../assets/fonts/2.woff2');
+}
+
+$font-1: 'font2', 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+$font-2: 'font2', 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+$font-size-large: 28px;
+$font-size-small: 14px;
