@@ -63,14 +63,12 @@ export class StoryMapper {
 						};
 
 						stories.push(story);
+						stories = stories.sort(me.sortStoriesByScore());
 					}
 				});
 			})
-			console.log('before sort', stories);
-			stories = stories.sort(this.sortStoriesByScore());
-			console.log('after sort', stories);
 
-			return stories;
+		return stories;
 	}
 
 	private async fetchUser(id: string): Promise<IUser> {
@@ -94,7 +92,6 @@ export class StoryMapper {
 		await fetch(`https://hacker-news.firebaseio.com/v0/user/${id}.json`)
 			.then(response => response.json())
 			.then(async data => {
-				console.log('data', data);
 				user = {
 					name: data.id ? data.id : 'unknown',
 					karma: data.karma,
@@ -110,20 +107,14 @@ export class StoryMapper {
 	}
 
 	private sortStoriesByScore() {
-		console.log('sorting...');
-
 		return function(a: any, b: any) {
-			console.log('sort', a['score'], b['score']);
 			if (a['score'] > b['score']) {
-				console.log('a>b');
 				return 1;
 			}
 			else if (a['score'] < b['score']) {
-				console.log('a<b');
 				return -1;
 			}
 			else {
-				console.log('a=b');
 				return 0;
 			}
 		}

@@ -17,9 +17,10 @@ export class IndexComponent implements OnInit {
 		this.getStories();
 	}
 
-	private async getStories() {		
+	private async getStories() {			
 		await this.storyMapper.getStories().then(stories => {
 			this.stories = stories;
 		});
 	}
+
 }
