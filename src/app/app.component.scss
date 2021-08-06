@@ -2,21 +2,54 @@
 
 .menu {
 	position: fixed;
-	display: flex;
-	flex-direction: row;
 	top: 0px;
 	color: $color-white;
 	background-color: $color-black;
 	width: 100%;
 	height: 50px;
 	line-height: 50px;
-	padding-left: 20px;
+	padding: 0 20px;
+	box-sizing: border-box;
 	z-index: 100;
+
+	.menu-items {
+		display: flex;
+		flex-direction: row;
+		align-content: space-between;
+	}
 
 	.logo {
 		font-family: $font-1;
 		font-size: 28px;
 		font-weight: bold;
 		line-height: 50px;
+		flex-grow: 1;
+
+		.narrow {
+			display: block;
+
+			@include breakpoint('large') {
+				display: none;
+			}
+		}
+		.wide {
+			display: none;
+
+			@include breakpoint('large') {
+				display: block;
+			}
+		}
+	}
+
+	.github {
+		position: relative;
+		display: flex;
+		align-items: center;
+		line-height: 100%;
+
+		.icon {
+			width: 28px;
+			height: 28px;
+		}
 	}
 }
