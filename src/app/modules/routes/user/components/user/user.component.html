@@ -1,0 +1,22 @@
+<ng-container *ngIf="user">
+	<h1>{{this.userId}}</h1>
+
+	<hr />
+
+	<h2>Bio:</h2>
+	<p>{{this.user.about}}</p>
+
+	<hr />
+
+	<h2>User submitted stories:</h2>
+	<ng-container *ngFor="let story of submittedStories">
+		<h3>{{story.title}}</h3>
+		<div class="card">
+			<div class="image" [style.background-image]="'url(assets/images/' + story.image + ')'"></div>
+		</div>
+	</ng-container>
+</ng-container>
+
+<ng-container *ngIf="!user">
+	<h1>No user with that name found.</h1>
+</ng-container>

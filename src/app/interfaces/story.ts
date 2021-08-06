@@ -17,3 +17,8 @@ export interface IUser {
 	name: string,
 	karma: number
 }
+
+export interface IUserRich extends IUser {
+	submitted: number[],
+	about?: string
+}

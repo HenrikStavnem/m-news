@@ -5,16 +5,24 @@
 		<div class="card">
 			<div class="header">
 				<div class="image" [style.background-image]="'url(assets/images/' + story.image + ')'"></div>
+				<div class="score">
+					<div>
+						<img src="assets/svgs/star.svg" />
+						<p>{{story.score}}</p>
+					</div>
+				</div>
 			</div>
 			<div class="footer">
 				<h1>{{story.title}}</h1>
+				<div class="date-line">
+					{{story.date | date:'medium'}}
+				</div>
 				<div class="by-line">
-					Posted by <a href="google.com">{{story.user.name}}</a>
+					Posted by <a [routerLink]="'/user/'+story.user.name">{{story.user.name}}</a>
 					<span class="karma">
-						<div class="tooltip">TOOLTIP<br />Input karma stuff here</div>
+						
 						♥ {{story.user.karma}}
 					</span>
-					 • {{story.date | date:'medium'}} • Score: {{story.score}}
 				</div>
 			</div>
 		</div>

@@ -1,20 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { IStory, IUser } from '../interfaces/story';
-import { ApiService } from '../services/api.service';
+import { IStory, IUser, IUserRich } from '../interfaces/story';
 
 @Injectable({
 	providedIn: 'root'
 })
-export class StoryMapper {
-	apiService: ApiService;
-
-	constructor(
-		apiService: ApiService
-	) {
-		this.apiService = apiService;
-	}
-
+export class StoryMapper {	
 	public async getStories(): Promise<IStory[]>  {
 		let stories: IStory[] = [];
 
@@ -30,6 +21,19 @@ export class StoryMapper {
 		return stories;
 	}
 
+	public async getUser(id: string): Promise<IUserRich> {
+		return await this.fetchUserRich(id);
+	}
+
+	public async getUserStories(storyIds: number[]) {
+		let stories: IStory[] = [],
+			selectedStoryids: number[] = this.getFirstTenStoryIds(storyIds);
+		
+		stories = await this.fetchStoriesData(selectedStoryids);
+
+		return stories;
+	}
+
 	private async fetchStoriesData(ids: number[]): Promise<IStory[]> {
 		const me: this = this;
 		let responses: Promise<IStory>[] = [],
@@ -41,40 +45,35 @@ export class StoryMapper {
 		});
 
 		await Promise.all(responses)
-			.then(function handleData(data) {
-				console.log('response data', data)
-				
+			.then(function handleData(data) {				
 				data.forEach(async storyData => {
+					if (storyData.type === 'story') { // we only want stories, not comments and polls
+						let user: IUser = await me.fetchUser(storyData.by),
+							story: IStory = {
+							id: storyData.id,
+							by: storyData.by,
+							score: storyData.score,
+							time: storyData.time,
+							date: new Date(storyData.time * 1000), //convert from seconds (UNIX) to milliseconds (Date)
+							type: storyData.type,
+							url: storyData.url,
+							title: storyData.title,
+							user: user,
+							image: me.pickRandomHeaderImage()
+						};
 
-					let user: IUser = await me.fetchUser(storyData.by);
-					console.log('user', user);
-
-					let story: IStory = {
-						id: storyData.id,
-						by: storyData.by,
-						score: storyData.score,
-						time: storyData.time,
-						date: new Date(storyData.time * 1000), //convert from seconds (UNIX) to milliseconds (Date)
-						type: storyData.type,
-						url: storyData.url,
-						title: storyData.title,
-						user: user,
-						image: me.pickRandomHeaderImage()
-					};
-
-					stories.push(story);
+						stories.push(story);
+					}
 				});
 			})
-		
-			console.log('END');
-
-			stories.sort(this.sortStoriesByScore());
+			console.log('before sort', stories);
+			stories = stories.sort(this.sortStoriesByScore());
+			console.log('after sort', stories);
 
 			return stories;
 	}
 
 	private async fetchUser(id: string): Promise<IUser> {
-
 		let user: IUser = {name: '', karma: 0};
 
 		await fetch(`https://hacker-news.firebaseio.com/v0/user/${id}.json`)
@@ -86,21 +85,45 @@ export class StoryMapper {
 				};
 			}
 		);
+		return user;
+	}
 
-		console.log('fetchUser return');
+	private async fetchUserRich(id: string): Promise<IUserRich> {
+		let user: IUserRich = {name: '', karma: 0, submitted: []};
 
+		await fetch(`https://hacker-news.firebaseio.com/v0/user/${id}.json`)
+			.then(response => response.json())
+			.then(async data => {
+				console.log('data', data);
+				user = {
+					name: data.id ? data.id : 'unknown',
+					karma: data.karma,
+					submitted: data.submitted ? data.submitted : []
+				};
+
+				if (data.about) {
+					user.about = data.about;
+				}
+			}
+		);
 		return user;
 	}
 
 	private sortStoriesByScore() {
+		console.log('sorting...');
+
 		return function(a: any, b: any) {
+			console.log('sort', a['score'], b['score']);
 			if (a['score'] > b['score']) {
+				console.log('a>b');
 				return 1;
 			}
 			else if (a['score'] < b['score']) {
+				console.log('a<b');
 				return -1;
 			}
 			else {
+				console.log('a=b');
 				return 0;
 			}
 		}
@@ -134,5 +157,9 @@ export class StoryMapper {
 		}
 
 		return selectedIds;
+	}
+
+	private getFirstTenStoryIds(storyIds: number[]): number[] {
+		return storyIds.slice(0, 10);
 	}
 }

@@ -1,0 +1,22 @@
+@import "../../../../../../styles.scss";
+
+h1, h2 {
+	color: $color-black;
+	font-family: $font-heavy;
+	font-weight: bold;
+}
+
+h1 {
+	font-size: $font-size-large;
+}
+
+h2 {
+	font-size: $font-size-medium;
+}
+
+p {
+	color: $color-black;
+	font-family: $font-light;
+	font-weight: light;
+	font-size: $font-size-small;
+}
