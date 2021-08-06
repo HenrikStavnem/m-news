@@ -3,18 +3,24 @@
 
 	<hr />
 
-	<h2>Bio:</h2>
-	<p>{{this.user.about}}</p>
-
-	<hr />
-
-	<h2>User submitted stories:</h2>
-	<ng-container *ngFor="let story of submittedStories">
-		<h3>{{story.title}}</h3>
-		<div class="card">
-			<div class="image" [style.background-image]="'url(assets/images/' + story.image + ')'"></div>
-		</div>
+	<ng-container *ngIf="this.user.about">
+		<h2>Bio:</h2>
+		<p>{{this.user.about}}</p>
+		<hr />
 	</ng-container>
+
+	<h2>Selection of user submitted stories:</h2>
+	<div class="card-container">
+		<ng-container *ngFor="let story of submittedStories">
+			<div class="card">
+				<div class="image" [style.background-image]="'url(assets/images/' + story.image + ')'">
+				</div>
+				<div class="headline">
+					{{story.title}}
+				</div>
+			</div>
+		</ng-container>
+	</div>
 </ng-container>
 
 <ng-container *ngIf="!user">

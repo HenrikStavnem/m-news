@@ -45,7 +45,8 @@ export class StoryMapper {
 		});
 
 		await Promise.all(responses)
-			.then(function handleData(data) {				
+			.then(function handleData(data) {
+
 				data.forEach(async storyData => {
 					if (storyData.type === 'story') { // we only want stories, not comments and polls
 						let user: IUser = await me.fetchUser(storyData.by),
